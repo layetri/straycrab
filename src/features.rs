@@ -9,7 +9,7 @@ use serde::{Serialize, Deserialize};
 
 use crate::io::audio::read_wav;
 use crate::io::bin::{decode, encode};
-use crate::util::{base_frq, F0_CEIL, F0_FLOOR};
+use crate::util::misc::{base_frq, get_fft_size, DEFAULT_FS, F0_CEIL, F0_FLOOR};
 
 use rsworld_sys::{HarvestOption, CheapTrickOption, D4COption};
 
@@ -74,14 +74,14 @@ impl FeatureDatabase {
 
 #[derive(Debug, Default, Serialize, Deserialize, PartialEq)]
 pub struct Features {
-    pub base: Vec<f64>,
+    pub base: f64,
     pub f0: Vec<f64>,
     pub mgc: Vec<Vec<f64>>,
     pub bap: Vec<Vec<f64>>
 }
 
 impl Features {
-    pub fn new(base: Vec<f64>, f0: Vec<f64>, mgc: Vec<Vec<f64>>, bap: Vec<Vec<f64>>) -> Features {
+    pub fn new(base: f64, f0: Vec<f64>, mgc: Vec<Vec<f64>>, bap: Vec<Vec<f64>>) -> Features {
         Features {
             base,
             f0,
@@ -149,6 +149,7 @@ impl Features {
             &f0,
             &mut ct_option
         );
+        let mgc = rsworld::code_spectral_envelope(&mgc, f0.len() as i32, DEFAULT_FS, get_fft_size(), 64);
 
         log::info!("Generating aperiodicity");
         let d4c_option = D4COption {
@@ -162,8 +163,9 @@ impl Features {
             &f0,
             &d4c_option
         );
+        let bap = rsworld::code_aperiodicity(&bap, f0.len() as i32, DEFAULT_FS);
 
-        features.base = vec![base_f0; f0.len()];
+        features.base = base_f0;
         features.f0 = f0;
         features.mgc = mgc;
         features.bap = bap;

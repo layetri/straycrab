@@ -1,2 +1,2 @@
-# Straycrab Resampler
-A resampler for UTAU, based on UtaUtaUtau's [straycat](https://github.com/utautautau/straycat). Compiled binaries are available via [layetri.net/straycrab](https://layetri.net/straycrab). 
+# straycrab Resampler
+A resampler for UTAU, based on UtaUtaUtau's [straycat](https://github.com/utautautau/straycat), and written in pure Rust. Compiled binaries are available via [layetri.net/straycrab](https://layetri.net/straycrab). I took on this project mainly as a way of getting to know the UTAU engine better, and hopefully learn some lessons that may help in further developing [Mikoto Studio](https://mikoto.studio).

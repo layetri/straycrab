@@ -1,5 +1,6 @@
-use std::collections::HashMap;
+use ndarray::prelude::*;
 
+use std::collections::HashMap;
 use anyhow::Result;
 
 pub const F0_FLOOR: f64 = 71.0;
@@ -28,9 +29,11 @@ pub fn get_fft_size() -> i32 {
     2048
 }
 
-pub fn smoothstep(edge0: f32, edge1: f32, x: f32) -> f32 {
-    let t = ((x - edge0) / (edge1 - edge0)).clamp(0.0, 1.0);
-    3.0 * t.powi(2) - 2.0 * t.powi(3)
+pub fn smoothstep(edge0: f64, edge1: f64, x: &Array1<f64>) -> Array1<f64> {
+    let t = ((x - edge0) / (edge1 - edge0));
+    let t = t.mapv(|v| v.clamp(0.0, 1.0));
+
+    3.0 * &t*&t - 2.0 * &t*&t*&t
 }
 
 pub fn bias(x: f32, a: f32) -> f32 {
@@ -84,7 +87,7 @@ pub fn to_int12_stream(data: Vec<&str>) -> Vec<i64> {
     res
 }
 
-pub fn pitch_string_to_cents(s: &String) -> Result<Vec<f32>> {
+pub fn pitch_string_to_cents(s: &String) -> Result<Vec<f64>> {
     let pitch: Vec<&str> = s.split("#").collect();
     let mut res = vec![];
 
@@ -101,4 +104,8 @@ pub fn pitch_string_to_cents(s: &String) -> Result<Vec<f32>> {
     }
 
     Ok(res)
+}
+
+pub fn mtof(pitch: f64) -> f64 {
+    440.0 * 2.0f64.powf((pitch - 69.0) / 12.0)
 }

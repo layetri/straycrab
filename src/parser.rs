@@ -2,38 +2,41 @@ use std::path::PathBuf;
 
 use anyhow::Result;
 
-use crate::{resampler::ResamplerFlags, util::pitch_string_to_cents};
+use crate::flags::ResamplerFlags;
+use crate::util::misc::pitch_string_to_cents;
 
 #[derive(Debug, Default)]
 pub struct ResamplerInstruction {
     pub input: PathBuf,
     pub output: PathBuf,
-    pub pitch: f32,
+    pub pitch: f64,
     pub velocity: f32,
-    pub flags: Vec<ResamplerFlags>,
+    pub flags: ResamplerFlags,
     pub offset: f32,
     pub length: usize,
     pub consonant: f32,
+    pub cutoff: f32,
     pub volume: f32,
     pub modulation: f32,
     pub tempo: f32,
-    pub pitchbend: Vec<f32>,
+    pub pitchbend: Vec<f64>,
 }
 
 pub fn parse_args(args: &Vec<String>) -> Result<ResamplerInstruction> {
     Ok(ResamplerInstruction {
         input: PathBuf::from(&args[1]),
         output: PathBuf::from(&args[2]),
-        pitch: args[3].parse::<f32>()?,
+        pitch: args[3].parse::<f64>()?,
         velocity: args[4].parse::<f32>()?,
         flags: ResamplerFlags::parse(&args[5]),
         offset: args[6].parse::<f32>()?,
         length: args[7].parse::<usize>()?,
         consonant: args[8].parse::<f32>()?,
-        volume: args[9].parse::<f32>()?,
-        modulation: args[10].parse::<f32>()?,
-        tempo: args[11].parse::<f32>()?,
-        pitchbend: pitch_string_to_cents(&args[12])?,
+        cutoff: args[9].parse::<f32>()?,
+        volume: args[10].parse::<f32>()?,
+        modulation: args[11].parse::<f32>()?,
+        tempo: args[12].parse::<f32>()?,
+        pitchbend: pitch_string_to_cents(&args[13])?,
     })
 }
 
