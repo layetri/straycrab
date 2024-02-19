@@ -1,0 +1,2 @@
+# Straycrab Resampler
+A resampler for UTAU, based on UtaUtaUtau's [straycat](https://github.com/utautautau/straycat). Compiled binaries are available via [layetri.net/straycrab](https://layetri.net/straycrab). 
