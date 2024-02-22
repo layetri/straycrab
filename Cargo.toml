@@ -17,6 +17,7 @@ ndarray = "0.15.6"
 npyz = {version = "0.8.3", features = ['npz', 'derive']}
 num-traits = "0.2.18"
 rand = "0.8.5"
+regex = "1.10.3"
 rsworld = "0.1.0"
 rsworld-sys = "0.1.0"
 serde = {version = "1.0.196", features = ['derive']}

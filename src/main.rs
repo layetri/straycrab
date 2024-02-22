@@ -44,11 +44,11 @@ mod tests {
             "straycrab".to_string(),
             env::var("TEST_FILE").unwrap(), // input
             "test/a.wav".to_string(), // output
-            "64".to_string(), // pitch
+            "F4".to_string(), // pitch
             "60".to_string(), // velocity
-            "G".to_string(), // flags
+            "".to_string(), // flags
             "24".to_string(), // offset
-            "500".to_string(), // length
+            "4000".to_string(), // length
             "56".to_string(), // consonant
             "73".to_string(), // cutoff
             "100".to_string(), // volume

@@ -19,6 +19,8 @@ pub fn read_wav(file: &Path) -> Result<(Vec<f32>, u32)> {
 }
 
 pub fn write_wav(file: &Path, samples: Vec<f32>, sample_rate: u32) -> Result<()> {
+    std::fs::create_dir_all(file.parent().unwrap())?;
+
     let spec = hound::WavSpec {
         channels: 1,
         sample_rate,

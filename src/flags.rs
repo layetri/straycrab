@@ -1,13 +1,15 @@
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Default)]
+use num_traits::Pow;
+
+#[derive(Debug, Copy, Clone, PartialEq, Default)]
 pub struct ResamplerFlags {
-    pub fry_end: Option<i32>,
-    pub fry_length: Option<i32>,
-    pub fry_offset: Option<i32>,
+    pub fry_end: Option<f64>,
+    pub fry_length: Option<f64>,
+    pub fry_offset: Option<f64>,
     pub fry_volume: Option<i32>,
-    pub fry_pitch: Option<i32>,
+    pub fry_pitch: Option<f64>,
     pub voicing_transition: Option<i32>,
     pub voicing_offset: Option<i32>,
-    pub gender: Option<i32>,
+    pub gender: Option<f64>,
     pub pitch_offset: Option<i32>,
     pub tremolo: Option<i32>,
     pub breathiness: Option<i32>,
@@ -25,21 +27,23 @@ impl ResamplerFlags {
             let parts = f.split(' ').collect::<Vec<&str>>();
             let (flag, value) = (parts[0], parts.get(1));
 
+            let value: i32 = value.map(|v| v.parse().unwrap()).unwrap_or(0);
+
             match flag {
-                "fe" => res.fry_end = value.map(|v| v.parse().unwrap()),
-                "fl" => res.fry_length = value.map(|v| v.parse().unwrap()),
-                "fo" => res.fry_offset = value.map(|v| v.parse().unwrap()),
-                "fv" => res.fry_volume = value.map(|v| v.parse().unwrap()),
-                "fp" => res.fry_pitch = value.map(|v| v.parse().unwrap()),
-                "ve" => res.voicing_transition = value.map(|v| v.parse().unwrap()),
-                "vo" => res.voicing_offset = value.map(|v| v.parse().unwrap()),
-                "g" => res.gender = value.map(|v| v.parse().unwrap()),
-                "B" => res.breathiness = value.map(|v| v.parse().unwrap()),
-                "P" => res.peak_compression = value.map(|v| v.parse().unwrap()),
-                "p" => res.peak_normalization = value.map(|v| v.parse().unwrap()),
-                "A" => res.tremolo = value.map(|v| v.parse().unwrap()),
-                "t" => res.pitch_offset = value.map(|v| v.parse().unwrap()),
-                "S" => res.sibilance = value.map(|v| v.parse().unwrap()),
+                "fe" => res.fry_end = Some(value as f64 / 1000.0),
+                "fl" => res.fry_length = Some((value as f64 / 1000.0).max(0.001)),
+                "fo" => res.fry_offset = Some(value as f64 / 1000.0),
+                "fv" => res.fry_volume = Some(value),
+                "fp" => res.fry_pitch = Some(value.max(0) as f64),
+                "ve" => res.voicing_transition = Some(value),
+                "vo" => res.voicing_offset = Some(value),
+                "g" => res.gender = Some((value as f64 / 120.0).pow(2.0)),
+                "B" => res.breathiness = Some(value),
+                "P" => res.peak_compression = Some(value),
+                "p" => res.peak_normalization = Some(value),
+                "A" => res.tremolo = Some(value),
+                "t" => res.pitch_offset = Some(value),
+                "S" => res.sibilance = Some(value),
                 "G" => res.force_features = true,
                 _ => {}
             }
